@@ -1,0 +1,33 @@
+INSERT INTO input_data(
+    Name,
+    Seed,
+    Region,
+    RPI,
+    RPIRank,
+    BPI,
+    BPIRank,
+    Kenpom,
+    KenpomRank,
+    Sagarin,
+    SagarinRank,
+    InitialOpponent,
+    MatchupNumber,
+    YEAR
+) VALUES(Gonzaga, 1, West, .6440, 8, 20.4,	1, 32.05, 1, 94.63, 1, SouthDakotaSt., 8, 2017);
+
+CREATE TABLE input_data(
+    Name varchar(80),
+    Seed int,
+    Region varchar(40),
+    RPI FLOAT,
+    RPIRank int,
+    BPI FLOAT,
+    BPIRank INT,
+    Kenpom FLOAT,
+    KenpomRank INT,
+    Sagarin FLOAT,
+    SagarinRank INT,
+    InitialOpponent varchar(80),
+    MatchupNumber INT,
+    Cur_year INT
+);

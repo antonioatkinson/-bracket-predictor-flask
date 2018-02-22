@@ -1,6 +1,5 @@
 from flask import Flask
 import flask
-from kenpom import kenpom_rankings
 import psycopg2 as p
 import urllib
 from bs4 import BeautifulSoup
@@ -10,12 +9,9 @@ from secrets import password
 from secrets import host
 from secrets import port
 
-
 app = Flask(__name__)
 
-
-@app.route('/')
-def hello_world():
+def kenpom_rankings():
     context = {}
     context["data"] = []
 
@@ -25,8 +21,7 @@ def hello_world():
     cur.execute("select * from test_table")
     rows = cur.fetchall()
 
-
-    # Sagarin rankings
+    # Kenpom rankings
     url = "https://kenpom.com/index.php?y=2017"
     # page = html.fromstring(urllib.request.urlopen(url).read())
     page = urllib.request.urlopen(url).read()
@@ -41,8 +36,8 @@ def hello_world():
 
     datasets = []
     for row in table.find_all("tr")[1:]:
-        #print(row)
-        #print(td.get_text() for td in row.find_all("td"))
+        # print(row)
+        # print(td.get_text() for td in row.find_all("td"))
         data = row.find_all("td")
         temp_arr = []
         for td in data:
@@ -52,7 +47,7 @@ def hello_world():
         datasets.append(temp_arr)
 
     datasets[:] = [item for item in datasets if len(item) != 0]
-    #print(datasets)
+    # print(datasets)
     cur.execute("DELETE FROM input_data")
     for row in datasets:
         rank = row[0]
@@ -82,17 +77,9 @@ def hello_world():
 
         # print(name)
 
-        cur.execute("INSERT INTO input_data(name, seed, kenpom, kenpomrank) VALUES (%s, %s, %s, %s)", [name, seed, float(kenpom_val), rank])
+        cur.execute("INSERT INTO input_data(name, seed, kenpom, kenpomrank) VALUES (%s, %s, %s, %s)",
+                    [name, seed, float(kenpom_val), rank])
 
     con.commit()
 
-
-
-
-    #context = {}
-    # context = kenpom_rankings()
-    return flask.render_template("hello.html", **context)
-
-
-if __name__ == '__main__':
-    app.run()
+    return context
