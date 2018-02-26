@@ -45,6 +45,8 @@ def hello_world():
     table_str = table_str.replace("</font>", "")
     table_str = table_str.replace("&ampnbsp", "")
     table_str = table_str.replace("<br/>", " ")
+
+    # Test data
     # print(table.__str__().split())
     print(table_str.find("Ohio State"))
     print(table_str[4090-5:4090 + 60].replace(";", ""))
@@ -63,8 +65,33 @@ def hello_world():
 
     temp_arr = find_all(table_str, "Michigan")
 
+
     for junk in temp_arr:
-        print(table_str[junk - 5:junk + 32].split())
+        row_info = table_str[junk - 5:junk + 32].split()
+
+        rank = 0
+        rating = 0.0
+
+        try:
+            rank = int(row_info[0])
+        except:
+            rank = -1
+
+        try:
+            rating = float(row_info[-1])
+        except:
+            rating = -1
+
+        if rank == -1 or rating == -1:
+            print("ERROR ", row_info)
+        else:
+            del row_info[-1]
+            del row_info[0]
+            team_name = ' '.join(row_info)
+            if team_name == "Michigan":
+                print("IT WORKED!", row_info)
+            print("PASSED: ", team_name)
+
 
 
     table_arr = table.__str__().split()

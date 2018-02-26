@@ -35,6 +35,7 @@ def kenpom_rankings():
     headings = [th.get_text() for th in table.find("tr").find_all("th")]
 
     datasets = []
+    # Grab all the table rows and put it into a list
     for row in table.find_all("tr")[1:]:
         # print(row)
         # print(td.get_text() for td in row.find_all("td"))
@@ -47,22 +48,28 @@ def kenpom_rankings():
         datasets.append(temp_arr)
 
     datasets[:] = [item for item in datasets if len(item) != 0]
-    # print(datasets)
+
     cur.execute("DELETE FROM input_data")
+
+    # Look at each table row and get the rank, seed, name, and rating for each team
     for row in datasets:
         rank = row[0]
         seed = ""
+
         if len(row[1].split()) > 1:
             seed = row[1].split()[-1]
         kenpom_val = row[4]
+
         # Remove first character (+)
         kenpom_val = kenpom_val[1:]
 
+        # See if the seed can be cast to an int otherwise there is no seed for that team (aka: they didn't make they toruney)
         try:
             seed = int(seed)
         except:
             seed = 0
 
+        # If it's greater than 0 then there is a valid seed for that team
         if seed > 0:
             print("Seed", row[1])
             # Remove seed from row
@@ -77,6 +84,7 @@ def kenpom_rankings():
 
         # print(name)
 
+        # Insert into database
         cur.execute("INSERT INTO input_data(name, seed, kenpom, kenpomrank) VALUES (%s, %s, %s, %s)",
                     [name, seed, float(kenpom_val), rank])
 
