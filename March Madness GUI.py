@@ -125,7 +125,7 @@ def hello_world():
                 del row_info[0]
                 team_name = ' '.join(row_info)
                 if team_name == team:
-                    cur.execute("UPDATE input_data SET where ")
+                    cur.execute("UPDATE input_data SET sagarin=%s, sagarinrank=%s WHERE name=%s", [float(rating), int(rank), org_team])
                     print("IT WORKED!", row_info, rank, rating)
 
 
@@ -186,7 +186,7 @@ def hello_world():
     #
     #     cur.execute("INSERT INTO input_data(name, seed, kenpom, kenpomrank) VALUES (%s, %s, %s, %s)", [name, seed, float(kenpom_val), rank])
     #
-    # con.commit()
+    con.commit()
 
 
 
