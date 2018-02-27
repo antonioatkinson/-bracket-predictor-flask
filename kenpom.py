@@ -22,7 +22,7 @@ def kenpom_rankings():
     rows = cur.fetchall()
 
     # Kenpom rankings
-    url = "https://kenpom.com/index.php?y=2017"
+    url = "https://kenpom.com/index.php?y=2012"
     # page = html.fromstring(urllib.request.urlopen(url).read())
     page = urllib.request.urlopen(url).read()
 

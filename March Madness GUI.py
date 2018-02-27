@@ -25,17 +25,19 @@ def hello_world():
     cur.execute("select * from input_data")
     rows = cur.fetchall()
 
-
+    list_of_teams = []
+    # Get team names
+    for row in rows:
+        if(row[1]>0):
+            list_of_teams.append(row[0])
 
     # Sagarin rankings
     url = "https://www.usatoday.com/sports/ncaab/sagarin/2012/team/"
-    # page = html.fromstring(urllib.request.urlopen(url).read())
+
     page = urllib.request.urlopen(url).read()
 
     soup = BeautifulSoup(page, 'html.parser')
 
-    # table = soup.find('table", attrs={"class": "details"})
-    # table = soup.find(id="ratings-table")
     table = soup.find_all('pre')
 
 
@@ -63,34 +65,68 @@ def hello_world():
     print(table_str[4561 - 5:4561 + 32])
     print(table_str[4561 - 5:4561 + 32].split())
 
-    temp_arr = find_all(table_str, "Michigan")
+    # Rating = Sagarin value (eg. 92.12 or 78.91)
+    # Ranking = Team ranking relative to other teams (eg. 1 or 42)
+    RATING_OFFSET = 32
+    RANKING_OFFSET = 5
 
+    team_alias = {}
+    team_alias["Saint Mary's"] = "Saint Mary's-Cal."
+    team_alias["Xavier"] = "Xavier-Ohio"
+    team_alias["Miami FL"] = "Miami-Florida"
+    team_alias["VCU"] = "VCU(Va. Commonwealth)"
+    team_alias["USC"] = "Southern California"
+    team_alias["UNC Wilmington"] = "NC Wilmington"
+    team_alias["North Carolina State"] = "NC State"
+    team_alias["UNC Asheville"] = "NC Asheville"
+    team_alias["Loyola MD"] = "Loyola-Maryland"
+    team_alias["LIU Brooklyn"] = "Long Island U."
 
-    for junk in temp_arr:
-        row_info = table_str[junk - 5:junk + 32].split()
+    for team in list_of_teams:
+        # Team name for database
+        org_team = team
 
-        rank = 0
-        rating = 0.0
+        # Check to see if there are any trailing white spaces
+        if team[-1] == " ":
+            team = team[0:-1]
 
-        try:
-            rank = int(row_info[0])
-        except:
-            rank = -1
+        # Check to see if team name ends in "St." and replace it with "State"
+        if team[-3:] == "St.":
+            temp = team.split()
+            temp[-1] = "State"
+            team = " ".join(temp)
+        # Check for an alias
+        if team in team_alias:
+            team = team_alias[team]
 
-        try:
-            rating = float(row_info[-1])
-        except:
-            rating = -1
+        indicies_of_results = find_all(table_str, team)
 
-        if rank == -1 or rating == -1:
-            print("ERROR ", row_info)
-        else:
-            del row_info[-1]
-            del row_info[0]
-            team_name = ' '.join(row_info)
-            if team_name == "Michigan":
-                print("IT WORKED!", row_info)
-            print("PASSED: ", team_name)
+        print("TEAM: ", team)
+
+        for element in indicies_of_results:
+            row_info = table_str[element - RANKING_OFFSET:element + RATING_OFFSET].split()
+
+            rank = 0
+            rating = 0.0
+
+            try:
+                rank = int(row_info[0])
+            except:
+                rank = -1
+
+            try:
+                rating = float(row_info[-1])
+            except:
+                rating = -1
+
+            # If rating and ranking are both valid then it checks the team name for a match
+            if rank != -1 and rating != -1:
+                del row_info[-1]
+                del row_info[0]
+                team_name = ' '.join(row_info)
+                if team_name == team:
+                    cur.execute("UPDATE input_data SET where ")
+                    print("IT WORKED!", row_info, rank, rating)
 
 
 
