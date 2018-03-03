@@ -26,10 +26,24 @@ def hello_world():
     cur.execute("select * from test_table")
     rows = cur.fetchall()
 
+    # Alias of certain team names
+    team_alias = {}
+    team_alias["Saint Mary's"] = "Saint Mary's-Cal."
+    team_alias["Xavier"] = "Xavier-Ohio"
+    team_alias["Miami FL"] = "Miami-Florida"
+    team_alias["VCU"] = "VCU(Va. Commonwealth)"
+    team_alias["USC"] = "Southern California"
+    team_alias["UNC Wilmington"] = "NC Wilmington"
+    team_alias["North Carolina State"] = "NC State"
+    team_alias["UNC Asheville"] = "NC Asheville"
+    team_alias["Loyola MD"] = "Loyola-Maryland"
+    team_alias["LIU Brooklyn"] = "Long Island U."
+    team_alias["UConn"] = "Connecticut"
+
     i = 1
     N = 15
     # BPI rankings
-    while i < N:
+    while i <= N:
         # url = "http://www.espn.com/mens-college-basketball/bpi/_/season/2012/view/overview"
         url = "http://www.espn.com/mens-college-basketball/bpi/_/view/bpi/season/2012/page/"+str(i)
         i+=1
@@ -46,6 +60,20 @@ def hello_world():
             bpi_rank = team_data[0].get_text()
             bpi_rating = team_data[-2].get_text()
             team_name = names[1].get_text()
+
+            # Check to see if there are any trailing white spaces
+            if team_name[-1] == " ":
+                team_name = team_name[0:-1]
+
+            # Check to see if team name ends in "St." and replace it with "State"
+            if team_name[-5:] == "State":
+                temp = team_name.split()
+                temp[-1] = "St."
+                print("temp", temp)
+                team_name = " ".join(temp)
+            # Check for an alias
+            if team_name in team_alias:
+                team_name = team_alias[team_name]
 
             print("name", names[1].get_text())
             print("bpi ranking", bpi_rank)
