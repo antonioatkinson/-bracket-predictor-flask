@@ -5,7 +5,19 @@
     <title>Hello Word</title>
 </head>
 <body>
+    <form method="POST">
+        <input name="search">
+        <input name="search2">
+        <input type="submit">
+    </form>
+
+    <form method="POST">
+         <button name="update-data">Update Data</button>
+    </form>
     <label>data</label>
-    {{ data }}
+    Name: {{ team }}
+    BPI Rank: {{ bpirank }}
+    Kenpom Rank: {{ kenpomrank }}
+    Sagarin Rank: {{ sagarinrank }}
 </body>
 </html>
