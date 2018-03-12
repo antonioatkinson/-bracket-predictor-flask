@@ -10,7 +10,7 @@ from secrets import username
 from secrets import password
 from secrets import host
 from secrets import port
-def bpi_rankings():
+def bpi_rankings(year):
     context = {}
     context["data"] = []
 
@@ -39,7 +39,7 @@ def bpi_rankings():
     # BPI rankings
     while i <= N:
         # url = "http://www.espn.com/mens-college-basketball/bpi/_/season/2012/view/overview"
-        url = "http://www.espn.com/mens-college-basketball/bpi/_/view/bpi/season/2012/page/"+ str(i)
+        url = "http://www.espn.com/mens-college-basketball/bpi/_/view/bpi/season/" + year + "/page/"+ str(i)
         i += 1
         page = urllib.request.urlopen(url).read()
 

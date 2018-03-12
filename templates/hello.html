@@ -15,9 +15,26 @@
          <button name="update-data">Update Data</button>
     </form>
     <label>data</label>
+    <div>
+    <label>TEAM 1:</label>
     Name: {{ team }}
     BPI Rank: {{ bpirank }}
     Kenpom Rank: {{ kenpomrank }}
     Sagarin Rank: {{ sagarinrank }}
+    </div>
+
+    <div>
+    <label>TEAM 2:</label>
+    Name: {{ team2 }}
+    BPI Rank: {{ bpirank2 }}
+    Kenpom Rank: {{ kenpomrank2 }}
+    Sagarin Rank: {{ sagarinrank2 }}
+    </div>
+
+    <div>
+    <label>Prediction:</label>
+    Weighted score for {{ team }}: {{ weighed_score }}
+    Weighted score for {{ team2 }}: {{ weighed_score2 }}
+    </div>
 </body>
 </html>

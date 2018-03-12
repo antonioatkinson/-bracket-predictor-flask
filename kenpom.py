@@ -11,7 +11,7 @@ from secrets import port
 
 app = Flask(__name__)
 
-def kenpom_rankings():
+def kenpom_rankings(year):
     context = {}
     context["data"] = []
 
@@ -22,7 +22,7 @@ def kenpom_rankings():
     rows = cur.fetchall()
 
     # Kenpom rankings
-    url = "https://kenpom.com/index.php?y=2012"
+    url = "https://kenpom.com/index.php?y="+year
     # page = html.fromstring(urllib.request.urlopen(url).read())
     page = urllib.request.urlopen(url).read()
 
@@ -83,6 +83,9 @@ def kenpom_rankings():
         name = str(row[1])
 
         # print(name)
+
+        if name[-1] == " ":
+            name = name[0:-1]
 
         # Insert into database
         cur.execute("INSERT INTO input_data(name, seed, kenpom, kenpomrank) VALUES (%s, %s, %s, %s)",

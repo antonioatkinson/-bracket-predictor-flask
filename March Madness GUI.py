@@ -22,6 +22,7 @@ def hello_world():
     con = p.connect("dbname=demo user='postgres' password='' host='localhost' port=5433")
     cur = con.cursor()
     context = {}
+    YEAR = "2018"
 
     if request.method == 'POST':
         if 'search' in request.form:
@@ -29,8 +30,11 @@ def hello_world():
             text2 = request.form["search2"]
             cur.execute("select * from input_data WHERE name=%s", [text])
             data = cur.fetchone()
+            print(text2)
             cur.execute("select * from input_data WHERE name=%s", [text2])
-            print(cur.fetchone())
+            data2 = cur.fetchone()
+            print(data2)
+            # print(cur.fetchone())
 
             context["team"] = data[0]
             context["seed"] = data[1]
@@ -40,11 +44,25 @@ def hello_world():
             context["kenpomrank"] = data[8]
             context["sagarin"] = data[9]
             context["sagarinrank"] = data[10]
+
+            context["team2"] = data2[0]
+            context["seed2"] = data2[1]
+            context["bpi2"] = data2[5]
+            context["bpirank2"] = data2[6]
+            context["kenpom2"] = data2[7]
+            context["kenpomrank2"] = data2[8]
+            context["sagarin2"] = data2[9]
+            context["sagarinrank2"] = data2[10]
+
+            context["weighed_score"] = float(4*context["sagarin"]+3*context["kenpom"]+2*context["bpi"])/9
+            context["weighed_score2"] = float(4 * context["sagarin2"] + 3 * context["kenpom2"] + 2 * context["bpi2"]) / 9
+
+
             print("Searching...", text)
         if 'update-data' in request.form:
-            kenpom_rankings()
-            sagarin_rankings()
-            bpi_rankings()
+            kenpom_rankings(YEAR)
+            sagarin_rankings(YEAR)
+            bpi_rankings(YEAR)
             print("Updating...")
 
 

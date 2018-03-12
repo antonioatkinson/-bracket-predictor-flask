@@ -11,7 +11,7 @@ from secrets import port
 
 app = Flask(__name__)
 
-def sagarin_rankings():
+def sagarin_rankings(year):
     context = {}
     context["data"] = []
 
@@ -28,7 +28,7 @@ def sagarin_rankings():
             list_of_teams.append(row[0])
 
     # Sagarin rankings
-    url = "https://www.usatoday.com/sports/ncaab/sagarin/2012/team/"
+    url = "https://www.usatoday.com/sports/ncaab/sagarin/" + year + "/team/"
 
     page = urllib.request.urlopen(url).read()
 
@@ -40,12 +40,18 @@ def sagarin_rankings():
     table_str = table.__str__().replace(";", "")
     table_str = table_str.replace('=<font color="#9900ff">', "")
     table_str = table_str.replace("</font>", "")
-    table_str = table_str.replace("&ampnbsp", "")
+    table_str = table_str.replace("&ampnbsp", " ")
     table_str = table_str.replace("<br/>", " ")
+    table_str = table_str.replace("=<font", " ")
+    table_str = table_str.replace('color="#9900ff', " ")
+    table_str = table_str.replace('color=', " ")
+    table_str = table_str.replace('">', " ")
+    table_str = table_str.replace('<font  "#000000', " ")
 
     # Rating = Sagarin value (eg. 92.12 or 78.91)
     # Ranking = Team ranking relative to other teams (eg. 1 or 42)
-    RATING_OFFSET = 32
+    # RATING_OFFSET = 32
+    RATING_OFFSET = 40
     RANKING_OFFSET = 5
 
     # Alias of certain team names
@@ -60,6 +66,8 @@ def sagarin_rankings():
     team_alias["UNC Asheville"] = "NC Asheville"
     team_alias["Loyola MD"] = "Loyola-Maryland"
     team_alias["LIU Brooklyn"] = "Long Island U."
+
+    seen_team = {}
 
     for team in list_of_teams:
         # Team name for database
@@ -83,7 +91,10 @@ def sagarin_rankings():
         print("TEAM: ", team)
 
         for element in indicies_of_results:
+            # Grab the row
             row_info = table_str[element - RANKING_OFFSET:element + RATING_OFFSET].split()
+
+            number_of_words = len(team.split())
 
             rank = 0
             rating = 0.0
@@ -94,7 +105,8 @@ def sagarin_rankings():
                 rank = -1
 
             try:
-                rating = float(row_info[-1])
+                # rating = float(row_info[-1])
+                rating = float(row_info[1+number_of_words])
             except:
                 rating = -1
 
@@ -103,10 +115,10 @@ def sagarin_rankings():
                 del row_info[-1]
                 del row_info[0]
                 team_name = ' '.join(row_info)
-                if team_name == team:
+                if team_name == team and team_name not in seen_team:
+                    seen_team[team_name] = True
                     cur.execute("UPDATE input_data SET sagarin=%s, sagarinrank=%s WHERE name=%s",
                                 [float(rating), int(rank), org_team])
-                    print("IT WORKED!", row_info, rank, rating)
 
     con.commit()
 
