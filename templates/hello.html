@@ -36,5 +36,22 @@
     Weighted score for {{ team }}: {{ weighed_score }}
     Weighted score for {{ team2 }}: {{ weighed_score2 }}
     </div>
+
+
+    <span>Team</span> <span>Seed</span> <span>BPI</span> <span>BPI Rank</span> <span>Kenpom</span> <span>Kenpom Rank</span>
+    <span>Sagarin</span> <span>Sagarin Rank</span>
+    <div>
+        {% for row in tourney_teams %}
+            <div>
+        {{ row[0] }}
+            {{ row[1] }}
+            {{ row[5] }}
+            {{ row[6] }}
+            {{ row[7] }}
+            {{ row[8] }}
+            {{ row[9] }}
+            </div>
+        {% endfor %}
+    </div>
 </body>
 </html>

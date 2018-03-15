@@ -36,6 +36,9 @@ def hello_world():
             print(data2)
             # print(cur.fetchone())
 
+            cur.execute("select * from input_data WHERE seed>0")
+            context["tourney_teams"] = cur.fetchall()
+
             context["team"] = data[0]
             context["seed"] = data[1]
             context["bpi"] = data[5]
@@ -44,6 +47,12 @@ def hello_world():
             context["kenpomrank"] = data[8]
             context["sagarin"] = data[9]
             context["sagarinrank"] = data[10]
+
+            context["weighed_score"] = float(4 * context["sagarin"] + 3 * context["kenpom"] + 2 * context["bpi"]) / 9
+
+            # Return if no input for second box
+            if data2 == None:
+                return flask.render_template("hello.html", **context)
 
             context["team2"] = data2[0]
             context["seed2"] = data2[1]
@@ -54,9 +63,7 @@ def hello_world():
             context["sagarin2"] = data2[9]
             context["sagarinrank2"] = data2[10]
 
-            context["weighed_score"] = float(4*context["sagarin"]+3*context["kenpom"]+2*context["bpi"])/9
             context["weighed_score2"] = float(4 * context["sagarin2"] + 3 * context["kenpom2"] + 2 * context["bpi2"]) / 9
-
 
             print("Searching...", text)
         if 'update-data' in request.form:
