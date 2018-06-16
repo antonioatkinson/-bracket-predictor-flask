@@ -22,7 +22,8 @@ def hello_world():
     con = p.connect("dbname=demo user='postgres' password='' host='localhost' port=5433")
     cur = con.cursor()
     context = {}
-    YEAR = "2018"
+    beginning_year = 2008
+    end_year = 2018
 
     if request.method == 'POST':
         if 'search' in request.form:
@@ -67,10 +68,13 @@ def hello_world():
 
             print("Searching...", text)
         if 'update-data' in request.form:
-            kenpom_rankings(YEAR)
-            sagarin_rankings(YEAR)
-            bpi_rankings(YEAR)
             print("Updating...")
+            for year in range(beginning_year, end_year):
+                kenpom_rankings(str(year))
+                sagarin_rankings(str(year))
+                bpi_rankings(str(year))
+
+            print("Updated!")
 
 
     return flask.render_template("hello.html", **context)

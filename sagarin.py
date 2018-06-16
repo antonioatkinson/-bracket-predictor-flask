@@ -117,8 +117,8 @@ def sagarin_rankings(year):
                 team_name = ' '.join(row_info)
                 if team_name == team and team_name not in seen_team:
                     seen_team[team_name] = True
-                    cur.execute("UPDATE input_data SET sagarin=%s, sagarinrank=%s WHERE name=%s",
-                                [float(rating), int(rank), org_team])
+                    cur.execute("UPDATE input_data SET sagarin=%s, sagarinrank=%s WHERE name=%s AND cur_year=%s",
+                                [float(rating), int(rank), org_team, year])
 
     con.commit()
 

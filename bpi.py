@@ -74,7 +74,7 @@ def bpi_rankings(year):
             print("bpi rating", bpi_rating)
             print("")
 
-            cur.execute("UPDATE input_data SET bpi=%s, bpirank=%s WHERE name=%s",
-                        [float(bpi_rating), int(bpi_rank), team_name])
+            cur.execute("UPDATE input_data SET bpi=%s, bpirank=%s WHERE name=%s AND cur_year=%s",
+                        [float(bpi_rating), int(bpi_rank), team_name, year])
 
         con.commit()

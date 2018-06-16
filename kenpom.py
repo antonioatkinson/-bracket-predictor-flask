@@ -49,7 +49,7 @@ def kenpom_rankings(year):
 
     datasets[:] = [item for item in datasets if len(item) != 0]
 
-    cur.execute("DELETE FROM input_data")
+    # cur.execute("DELETE FROM input_data")
 
     # Look at each table row and get the rank, seed, name, and rating for each team
     for row in datasets:
@@ -88,8 +88,8 @@ def kenpom_rankings(year):
             name = name[0:-1]
 
         # Insert into database
-        cur.execute("INSERT INTO input_data(name, seed, kenpom, kenpomrank) VALUES (%s, %s, %s, %s)",
-                    [name, seed, float(kenpom_val), rank])
+        cur.execute("INSERT INTO input_data(name, seed, kenpom, kenpomrank, cur_year) VALUES (%s, %s, %s, %s, %s)",
+                    [name, seed, float(kenpom_val), rank, year])
 
     con.commit()
 
