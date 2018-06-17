@@ -49,8 +49,6 @@ def kenpom_rankings(year):
 
     datasets[:] = [item for item in datasets if len(item) != 0]
 
-    # cur.execute("DELETE FROM input_data")
-
     # Look at each table row and get the rank, seed, name, and rating for each team
     for row in datasets:
         rank = row[0]

@@ -69,7 +69,9 @@ def hello_world():
             print("Searching...", text)
         if 'update-data' in request.form:
             print("Updating...")
-            for year in range(beginning_year, end_year):
+            # Clears DB table
+            cur.execute("DELETE FROM input_data")
+            for year in range(beginning_year, end_year + 1):
                 kenpom_rankings(str(year))
                 sagarin_rankings(str(year))
                 bpi_rankings(str(year))

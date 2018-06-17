@@ -51,7 +51,10 @@ def sagarin_rankings(year):
     # Rating = Sagarin value (eg. 92.12 or 78.91)
     # Ranking = Team ranking relative to other teams (eg. 1 or 42)
     # RATING_OFFSET = 32
-    RATING_OFFSET = 40
+    if int(year) < 2014:
+        RATING_OFFSET = 32
+    else:
+        RATING_OFFSET = 40
     RANKING_OFFSET = 5
 
     # Alias of certain team names
@@ -115,7 +118,9 @@ def sagarin_rankings(year):
                 del row_info[-1]
                 del row_info[0]
                 team_name = ' '.join(row_info)
+
                 if team_name == team and team_name not in seen_team:
+                    print("team found")
                     seen_team[team_name] = True
                     cur.execute("UPDATE input_data SET sagarin=%s, sagarinrank=%s WHERE name=%s AND cur_year=%s",
                                 [float(rating), int(rank), org_team, year])
