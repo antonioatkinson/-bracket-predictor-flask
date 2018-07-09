@@ -171,7 +171,13 @@ def main():
 	temp = {}
 	temp = json.loads(io.getvalue())
 	# Keys: Region dictionary, region number, round number, matchup number
-	print (temp["regions"][0][0][1])
+	print (temp["regions"][0][0][0])
+
+	for region in temp["regions"]:
+		for region_num in region[0]:
+			print (region_num[0]["team"], " vs ", region_num[1]["team"])
+			# for matchup in region_num:
+			# 	print (matchup)
 
 
 if __name__ == '__main__':
