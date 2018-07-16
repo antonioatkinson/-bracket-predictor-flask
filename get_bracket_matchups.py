@@ -14,6 +14,7 @@ import re
 import sys
 import mwparserfromhell
 from io import StringIO
+import psycopg2 as p
 
 app = Flask(__name__)
 
@@ -60,8 +61,8 @@ def sum_for_game(game):
     return game[0]['seed'] + game[1]['seed']
 
 
-def extract_source():
-	url = "https://en.wikipedia.org/w/index.php?action=edit&title=2017_NCAA_Division_I_Men%27s_Basketball_Tournament"
+def extract_source(year):
+	url = "https://en.wikipedia.org/w/index.php?action=edit&title=" + str(year) + "_NCAA_Division_I_Men%27s_Basketball_Tournament"
 	page = urllib.request.urlopen(url).read()
 
 	soup = BeautifulSoup(page, 'html.parser')
@@ -160,24 +161,49 @@ def extract_bracket(source, year):
         'finalfour': brackets[4]
     }
 
+def inital_opponents(year):
+    year = 2018
+    source = extract_source(year)
+    bracket = extract_bracket(source, year)
 
+    # con = p.connect("dbname=" + dbname +" user=" + username + " password=" + password + " host=" + host + " port=" + port)
+    con = p.connect("dbname=demo user='postgres' password='' host='localhost' port=5433")
+    cur = con.cursor()
 
-def main():
-	source = extract_source()
-	bracket = extract_bracket(source, 2017)
+    io = StringIO()
+    json.dump(bracket, io)
+    temp = {}
+    temp = json.loads(io.getvalue())
+    # Keys: Region dictionary, region number, round number, matchup number
+    print(temp["regions"][0][0][0])
 
-	io = StringIO()
-	json.dump(bracket, io)
-	temp = {}
-	temp = json.loads(io.getvalue())
-	# Keys: Region dictionary, region number, round number, matchup number
-	print (temp["regions"][0][0][0])
+    for region in temp["regions"]:
+        for region_num in region[0]:
+            print(region_num[0]["team"], " vs ", region_num[1]["team"])
+            # Insert initial opponent for a pair of teams for a given year
+            cur.execute("UPDATE input_data SET initialopponent=%s WHERE name=%s AND cur_year=%s",
+                        [region_num[0]["team"], region_num[1]["team"], year])
+            cur.execute("UPDATE input_data SET initialopponent=%s WHERE name=%s AND cur_year=%s",
+                        [region_num[1]["team"], region_num[0]["team"], year])
 
-	for region in temp["regions"]:
-		for region_num in region[0]:
-			print (region_num[0]["team"], " vs ", region_num[1]["team"])
-			# for matchup in region_num:
-			# 	print (matchup)
+    con.commit()
+
+# def main():
+#     source = extract_source()
+#     bracket = extract_bracket(source, 2017)
+#
+#     io = StringIO()
+#     json.dump(bracket, io)
+#     temp = {}
+#     temp = json.loads(io.getvalue())
+#     # Keys: Region dictionary, region number, round number, matchup number
+#     print (temp["regions"][0][0][0])
+#
+#     for region in temp["regions"]:
+#         for region_num in region[0]:
+#             print (region_num[0]["team"], " vs ", region_num[1]["team"])
+#             # for matchup in region_num:
+#             # 	print (matchup)
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ from flask import request
 from kenpom import kenpom_rankings
 from sagarin import sagarin_rankings
 from bpi import bpi_rankings
+from get_bracket_matchups import inital_opponents
 import psycopg2 as p
 import urllib
 from bs4 import BeautifulSoup
@@ -70,11 +71,13 @@ def hello_world():
         if 'update-data' in request.form:
             print("Updating...")
             # Clears DB table
-            cur.execute("DELETE FROM input_data")
+            # cur.execute("DELETE FROM input_data")
             for year in range(beginning_year, end_year + 1):
-                kenpom_rankings(str(year))
-                sagarin_rankings(str(year))
-                bpi_rankings(str(year))
+                # kenpom_rankings(str(year))
+                # sagarin_rankings(str(year))
+                # bpi_rankings(str(year))
+                inital_opponents(str(year))
+
 
             print("Updated!")
 
