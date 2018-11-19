@@ -30,10 +30,12 @@ def hello_world():
         if 'search' in request.form:
             text = request.form["search"]
             text2 = request.form["search2"]
-            cur.execute("select * from input_data WHERE name=%s", [text])
+            cur.execute("select * from input_data WHERE name=%s AND cur_year=2018", [text])
             data = cur.fetchone()
+            print(text)
+            print(data)
             print(text2)
-            cur.execute("select * from input_data WHERE name=%s", [text2])
+            cur.execute("select * from input_data WHERE name=%s AND cur_year=2018", [text2])
             data2 = cur.fetchone()
             print(data2)
             # print(cur.fetchone())
@@ -73,9 +75,9 @@ def hello_world():
             # Clears DB table
             # cur.execute("DELETE FROM input_data")
             for year in range(beginning_year, end_year + 1):
-                # kenpom_rankings(str(year))
-                # sagarin_rankings(str(year))
-                # bpi_rankings(str(year))
+                kenpom_rankings(str(year))
+                sagarin_rankings(str(year))
+                bpi_rankings(str(year))
                 inital_opponents(str(year))
 
 

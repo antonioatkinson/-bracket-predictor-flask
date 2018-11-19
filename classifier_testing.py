@@ -52,7 +52,7 @@ for i in range(0,1000):
 	# clf = tree.DecisionTreeClassifier()
 	clf = linear_model.LogisticRegression()
 	# clf = xgb.XGBClassifier()
-	# clf = clf.fit(np.array(features),np.array(labels))
+	clf = clf.fit(np.array(features),np.array(labels))
 
 	clf = clf.fit(np.array(X_train), np.array(y_train))
 
@@ -65,7 +65,7 @@ for i in range(0,1000):
 		total_tested+=1
 
 
-print "Accuracy: ", correct/float(total_tested)
+print ("Accuracy: ", correct/float(total_tested))
 
 
 # print clf.predict(sys.argv[1], sys.argv[2])
